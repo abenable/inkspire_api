@@ -64,8 +64,8 @@ router.delete('/delete', protect, async (req, res, next) => {
   }
 });
 
-router.get('/trending-posts', async (req, res) => {
-  const timeSpan = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+router.get('/trending', async (req, res) => {
+  const timeSpan = 7 * 24 * 60 * 60 * 1000; // 24 hours in milliseconds
   const currentTime = Date.now();
 
   try {
@@ -73,14 +73,14 @@ router.get('/trending-posts', async (req, res) => {
       createdAt: { $gte: currentTime - timeSpan },
     })
       .sort({ reads: -1 })
-      .limit(10); // Retrieve trending posts within the last 24 hours
+      .limit(10);
     res.json(trendingPosts);
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve trending posts.' });
   }
 });
 
-router.get('/top-posts', async (req, res) => {
+router.get('/top', async (req, res) => {
   try {
     const topPosts = await BlogPost.find().sort({ likes: -1 }).limit(10); // Retrieve top 10 posts
     res.json(topPosts);
@@ -89,16 +89,17 @@ router.get('/top-posts', async (req, res) => {
   }
 });
 
-router.get('/latest-posts', async (req, res) => {
+router.get('/latest', async (req, res) => {
   try {
-    const latestPosts = await BlogPost.find().sort({ createdAt: -1 }).limit(10); // Retrieve latest 10 posts
+    const latestPosts = await BlogPost.find().sort({ createdAt: -1 }).limit(10);
+    // Retrieve latest 10 posts
     res.json(latestPosts);
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve latest posts.' });
   }
 });
 
-router.get('/recommended-posts', async (req, res) => {
+router.get('/recommended', async (req, res) => {
   try {
     const recommendedPosts = await BlogPost.find({ recommendedByEditor: true });
     res.json(recommendedPosts);

@@ -150,7 +150,7 @@ export const updatepassword = async (req, res, next) => {
 
 export const Register = async (req, res, next) => {
   try {
-    const { username, email, role, password } = req.body;
+    const { username, email, password } = req.body;
 
     const checkemail = await UserModel.findOne({ email });
     if (checkemail) {
@@ -161,7 +161,6 @@ export const Register = async (req, res, next) => {
     const newUser = new UserModel({
       username,
       email,
-      role,
       password,
     });
     await newUser.save();
@@ -184,7 +183,7 @@ export const Register = async (req, res, next) => {
 
 export const AdminRegister = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     const checkemail = await UserModel.findOne({ email });
     if (checkemail) {
@@ -193,6 +192,8 @@ export const AdminRegister = async (req, res, next) => {
       );
     }
     const newUser = new UserModel({
+      firstName,
+      lastName,
       email,
       role: 'admin',
       password,
@@ -219,15 +220,12 @@ export const AdminRegister = async (req, res, next) => {
 
 export const Login = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
-    //Check if user with this email exists....
     const user = await UserModel.findOne({ email }).select('+password');
     if (!user) {
       return next(new ApiError(401, 'User doesnt exist........'));
     }
 
-    //Check if the password entered is correct....
     if (!(await user.correctPassword(password, user.password))) {
       return next(
         new ApiError(401, 'Invalid credentials. Check them and try again.')

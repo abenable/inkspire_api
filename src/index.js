@@ -17,6 +17,7 @@ import { ApiError, ErrorHandler } from './controllers/errorController.js';
 import { blogRouter } from './routes/blogRoutes.js';
 import { authRouter } from './routes/authRoutes.js';
 import { getDirname, limiter } from './utils/util.js';
+import { userRouter } from './routes/userRoutes.js';
 
 const port = process.env.PORT;
 const uri = process.env.URI;
@@ -42,10 +43,11 @@ app.use(hpp());
 // 2) ROUTES
 app.use('/auth', authRouter);
 app.use('/blog', blogRouter);
-app.use('/view', viewRouter);
+app.use('/users', userRouter);
 app.use('/', (req, res, next) => {
   res.status(200).render('homepage', { title: 'Home' });
 });
+
 app.all('*', (req, res, next) => {
   next(
     new ApiError(404, `Oooops!! Can't find ${req.originalUrl} on this server!`)

@@ -21,7 +21,6 @@ const blogSchema = new mongoose.Schema({
   author: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'users',
-    default: '648f530a37aab1e9dade84bd',
   },
   recommendedByEditor: { type: Boolean, default: false },
   likes: { type: Number, default: 0 },
