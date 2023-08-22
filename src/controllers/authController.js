@@ -43,7 +43,7 @@ export const protect = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    next(new ApiError(500, 'internal server error'));
+    next(new ApiError(500, error.message));
   }
 };
 
@@ -87,7 +87,7 @@ export const forgotpassword = async (req, res, next) => {
       message: 'Token sent to your email',
     });
   } catch (error) {
-    return next(new ApiError(500, 'There was no error'));
+    return next(new ApiError(500, error.message));
   }
 };
 
@@ -114,7 +114,7 @@ export const resetpassword = async (req, res, next) => {
       UserId: user._id,
     });
   } catch (error) {
-    return next(new ApiError(500, 'There was no error'));
+    return next(new ApiError(500, error.message));
   }
 };
 
@@ -144,7 +144,7 @@ export const updatepassword = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    next(new ApiError(500, 'There was no error'));
+    next(new ApiError(500, error.message));
   }
 };
 
@@ -177,7 +177,7 @@ export const Register = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    next(new ApiError(500, 'internal server error'));
+    next(new ApiError(500, error.message));
   }
 };
 
@@ -214,7 +214,7 @@ export const AdminRegister = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    next(new ApiError(500, 'internal server error'));
+    next(new ApiError(500, error.message));
   }
 };
 
@@ -247,6 +247,6 @@ export const Login = async (req, res, next) => {
       user,
     });
   } catch (error) {
-    return next(new ApiError(500, 'There was an error'));
+    return next(new ApiError(500, error.message));
   }
 };

@@ -19,7 +19,7 @@ const blogSchema = new mongoose.Schema({
 
   CreatedAt: { type: Date, default: Date.now },
   author: {
-    type: mongoose.SchemaTypes.ObjectId,
+    type: mongoose.Schema.ObjectId,
     ref: 'users',
   },
   recommendedByEditor: { type: Boolean, default: false },
@@ -38,9 +38,8 @@ blogSchema.index({ '$**': 'text' });
 blogSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'author',
-    select: 'email',
-  }).select('-__v');
-
+    select: '-__v -accountCreatedAt',
+  });
   next();
 });
 

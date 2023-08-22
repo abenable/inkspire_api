@@ -9,6 +9,14 @@ export const allUsers = async (req, res) => {
     new ApiError(500, 'An error occurred while fetching users.');
   }
 };
+export const userProfile = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.id);
+    res.json(user);
+  } catch (error) {
+    new ApiError(500, 'An error occurred while fetching user profile.');
+  }
+};
 
 export const delUser = async (req, res) => {
   try {

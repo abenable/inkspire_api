@@ -11,13 +11,13 @@ router.post('/add', protect, async (req, res, next) => {
     const blog = await BlogModel.create({
       title,
       content,
-      author_Id: req.user.id,
+      author: req.user.id,
     });
 
     res.status(201).json({
       status: 'success',
+      blog,
       message: 'Blog created successfully.',
-      data: blog,
     });
   } catch (error) {
     console.error(error);
@@ -47,19 +47,29 @@ router.get('/search', async (req, res, next) => {
   }
 });
 
-router.delete('/delete', protect, async (req, res, next) => {
+router.delete('/delete/:id', protect, async (req, res, next) => {
   try {
     const blog = await BlogModel.findById(req.params.id);
-    if (!req.user.id == blog.author_Id || req.user.role !== 'admin') {
-      return new ApiError(403, 'You are not allowed to perform this action.');
+    if (!blog) {
+      res.status(404).json({
+        status: 'Failed',
+        message: 'Blog not found..',
+      });
     }
-    await BlogModel.deleteOne({ id: blog._id });
-    res.status(200).json({
-      status: 'success',
-      message: 'Blog deleted successfully..',
-    });
+    if (req.user.id == blog.author.id || req.user.role == 'admin') {
+      const response = await BlogModel.findByIdAndDelete(blog.id);
+      res.status(200).json({
+        status: 'success',
+        message: response,
+      });
+    } else {
+      return res.status(403).json({
+        status: 'Failed',
+        message: 'You are not allowed to perform this action.',
+      });
+    }
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     next(new ApiError(500, 'Internal server error.'));
   }
 });
@@ -106,6 +116,21 @@ router.get('/recommended', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve recommended posts.' });
   }
+});
+
+router.delete('/del-all', protect, async (req, res) => {
+  try {
+    const blogs = await BlogModel.deleteMany();
+    res.status(200).json({ blogs });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.all('*', (req, res, next) => {
+  next(
+    new ApiError(404, `Oooops!! Can't find ${req.originalUrl} on this server!`)
+  );
 });
 
 export { router as blogRouter };
