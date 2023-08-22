@@ -1,7 +1,7 @@
 import express from 'express';
 import { ApiError } from '../controllers/errorController.js';
 import { BlogModel } from '../models/blogs.js';
-import { protect } from '../controllers/authController.js';
+import { protect, restrictTo } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -118,7 +118,7 @@ router.get('/recommended', async (req, res) => {
   }
 });
 
-router.delete('/del-all', protect, async (req, res) => {
+router.delete('/del-all', protect, restrictTo('admin'), async (req, res) => {
   try {
     const blogs = await BlogModel.deleteMany();
     res.status(200).json({ blogs });
