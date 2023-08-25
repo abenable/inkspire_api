@@ -21,7 +21,7 @@ commentSchema.pre('save', async function (next) {
   next();
 });
 
-blogSchema.pre(/^find/, function (next) {
+commentSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'author_Id',
     select: 'email',
