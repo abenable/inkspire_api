@@ -41,9 +41,9 @@ userSchema.methods.correctPassword = async function (password, savedPassword) {
 };
 
 userSchema.methods.createpassresetToken = function () {
-  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetToken = crypto.randomBytes(16).toString('hex');
   this.passresettoken = crypto
-    .createHash('sha256')
+    .createHash('sha256', 8)
     .update(resetToken)
     .digest('hex');
   return resetToken;
