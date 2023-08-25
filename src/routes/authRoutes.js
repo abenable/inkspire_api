@@ -4,12 +4,9 @@ import {
   Login,
   Register,
   forgotpassword,
-  protect,
   resetpassword,
-  restrictTo,
   updatepassword,
 } from '../controllers/authController.js';
-import { UserModel } from '../models/users.js';
 import { ApiError } from '../controllers/errorController.js';
 
 const router = express.Router();
@@ -19,7 +16,7 @@ router.post('/admin/register', AdminRegister);
 router.post('/login', Login);
 router.post('/forgotpassword', forgotpassword);
 router.post('/updatepassword', updatepassword);
-router.patch('/resetpassword/:token', resetpassword);
+router.patch('/resetpassword', resetpassword);
 
 router.all('*', (req, res, next) => {
   next(
