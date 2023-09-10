@@ -14,7 +14,7 @@ const ErrorHandler = (err, req, res, next) => {
   let message = err.message || 'Internal Server Error';
 
   res.status(statusCode).json({
-    status: `${statusCode}`.startsWith('4') ? 'failed' : 'error',
+    status: 'Error',
     error_message: message,
   });
 };
