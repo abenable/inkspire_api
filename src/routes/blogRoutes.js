@@ -1,4 +1,5 @@
 import express from 'express';
+import moment from 'moment';
 import { ApiError } from '../controllers/errorController.js';
 import { BlogModel } from '../models/blogs.js';
 import { protect, restrictTo } from '../controllers/authController.js';
@@ -109,12 +110,40 @@ router.get('/latest', async (req, res) => {
   }
 });
 
+// Route to randomly select a recent post as recommended for one hour
 router.get('/recommended', async (req, res) => {
   try {
-    const recommendedPosts = await BlogPost.find({ recommendedByEditor: true });
-    res.json(recommendedPosts);
+    // Calculate the date one week ago from the current date
+    const oneWeekAgo = moment().subtract(1, 'weeks').toDate();
+
+    // Find all posts created within the last week
+    const recentPosts = await BlogPost.find({
+      createdAt: { $gte: oneWeekAgo },
+    });
+
+    if (recentPosts.length === 0) {
+      return res.status(404).json({ error: 'No recent posts found.' });
+    }
+
+    // Randomly select one post from the recent posts
+    const randomIndex = Math.floor(Math.random() * recentPosts.length);
+    const recommendedPost = recentPosts[randomIndex];
+
+    // Set the recommendedByEditor field to true for the selected post
+    recommendedPost.recommendedByEditor = true;
+    await recommendedPost.save();
+
+    // Schedule a task to reset the recommendedByEditor field to false after one hour
+    setTimeout(async () => {
+      recommendedPost.recommendedByEditor = false;
+      await recommendedPost.save();
+    }, 3600000); // One hour in milliseconds
+
+    res.json(recommendedPost);
   } catch (error) {
-    res.status(500).json({ error: 'Could not retrieve recommended posts.' });
+    res
+      .status(500)
+      .json({ error: 'Could not retrieve or set recommended post.' });
   }
 });
 

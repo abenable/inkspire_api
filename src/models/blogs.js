@@ -11,6 +11,11 @@ const blogSchema = new mongoose.Schema({
     required: true,
     default: 'Lifestyle',
   },
+  tags: {
+    type: Array,
+    required: true,
+    default: [],
+  },
   rating: {
     type: Number,
     max: 5,
