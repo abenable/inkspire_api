@@ -1,5 +1,5 @@
 {
-  "name": "InkSpire",
+  "name": "inkSpire",
   "description": "API for InkSpire blogsite.",
   "version": "1.0.0",
   "main": "index.js",

@@ -19,12 +19,14 @@ import { blogRouter } from './routes/blogRoutes.js'; // Router for blog-related 
 import { authRouter } from './routes/authRoutes.js'; // Router for authentication-related routes
 import { getDirname, limiter } from './utils/util.js'; // Custom utility functions
 import { userRouter } from './routes/userRoutes.js'; // Router for user-related routes
+import { log } from 'console';
 
 // Get port and MongoDB connection URI from environment variables
 const port = process.env.PORT;
-const uri = process.env.URI;
-const local_uri = process.env.LOCAL_URI;
-
+const uri =
+  process.env.NODE_ENV === 'development'
+    ? process.env.LOCAL_URI
+    : process.env.URI;
 // Get the directory name of the current module
 const __dirname = getDirname(import.meta.url);
 
@@ -90,7 +92,7 @@ app.listen(port, async () => {
   console.log(`Server running on port ${port}`);
   try {
     // Connect to the MongoDB database
-    await mongoose.connect(local_uri);
+    await mongoose.connect(uri);
     console.log('Connected to the database.');
   } catch (error) {
     console.error(error);

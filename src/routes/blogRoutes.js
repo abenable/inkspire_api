@@ -5,7 +5,7 @@ import { protect, restrictTo } from '../controllers/authController.js';
 
 const router = express.Router();
 
-router.post('/add', protect, async (req, res, next) => {
+router.post('/post', protect, async (req, res, next) => {
   const { title, content } = req.body;
   try {
     const blog = await BlogModel.create({
