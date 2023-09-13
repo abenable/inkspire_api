@@ -28,6 +28,26 @@ router.post('/post', protect, async (req, res, next) => {
   }
 });
 
+router.post(
+  '/postMultiple',
+  protect,
+  restrictTo('admin'),
+  async (req, res, next) => {
+    try {
+      const blogs = await BlogModel.create(req.body);
+
+      res.status(201).json({
+        status: 'success',
+        blogs,
+        message: 'Blogs created successfully.',
+      });
+    } catch (error) {
+      console.error(error);
+      next(new ApiError(500, 'internal server error'));
+    }
+  }
+);
+
 router.get('/all', protect, async (req, res, next) => {
   try {
     const blogs = await BlogModel.find();
@@ -82,7 +102,7 @@ router.get('/trending', async (req, res) => {
   const currentTime = Date.now();
 
   try {
-    const trendingPosts = await BlogPost.find({
+    const trendingPosts = await BlogModel.find({
       createdAt: { $gte: currentTime - timeSpan },
     })
       .sort({ reads: -1 })
@@ -95,7 +115,7 @@ router.get('/trending', async (req, res) => {
 
 router.get('/top', async (req, res) => {
   try {
-    const topPosts = await BlogPost.find().sort({ likes: -1 }).limit(10); // Retrieve top 10 posts
+    const topPosts = await BlogModel.find().sort({ likes: -1 }).limit(10); // Retrieve top 10 posts
     res.json(topPosts);
   } catch (error) {
     res.status(500).json({ error: 'Could not retrieve top posts.' });
@@ -104,7 +124,9 @@ router.get('/top', async (req, res) => {
 
 router.get('/latest', async (req, res) => {
   try {
-    const latestPosts = await BlogPost.find().sort({ createdAt: -1 }).limit(10);
+    const latestPosts = await BlogModel.find()
+      .sort({ createdAt: -1 })
+      .limit(10);
     // Retrieve latest 10 posts
     res.json(latestPosts);
   } catch (error) {
@@ -116,11 +138,11 @@ router.get('/latest', async (req, res) => {
 router.get('/recommended', async (req, res) => {
   try {
     // Calculate the date one week ago from the current date
-    const oneWeekAgo = moment().subtract(1, 'weeks').toDate();
+    const aWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
     // Find all posts created within the last week
-    const recentPosts = await BlogPost.find({
-      createdAt: { $gte: oneWeekAgo },
+    const recentPosts = await BlogModel.find({
+      createdAt: { $gte: aWeekAgo },
     });
 
     if (recentPosts.length === 0) {
@@ -143,6 +165,7 @@ router.get('/recommended', async (req, res) => {
 
     res.json(recommendedPost);
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ error: 'Could not retrieve or set recommended post.' });

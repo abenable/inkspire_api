@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const blogSchema = new mongoose.Schema({
-  title: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
   body: {
     type: String,
     required: true,
@@ -17,7 +17,7 @@ const blogSchema = new mongoose.Schema({
     default: [],
   },
 
-  CreatedAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
   author: {
     type: mongoose.Schema.ObjectId,
     ref: 'users',
