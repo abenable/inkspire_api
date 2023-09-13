@@ -7,11 +7,13 @@ import { protect, restrictTo } from '../controllers/authController.js';
 const router = express.Router();
 
 router.post('/post', protect, async (req, res, next) => {
-  const { title, content } = req.body;
+  const { title, body, tags, category } = req.body;
   try {
     const blog = await BlogModel.create({
       title,
       content,
+      category,
+      tags,
       author: req.user.id,
     });
 

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const blogSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
-  content: {
+  body: {
     type: String,
     required: true,
   },
@@ -16,11 +16,6 @@ const blogSchema = new mongoose.Schema({
     required: true,
     default: [],
   },
-  rating: {
-    type: Number,
-    max: 5,
-    default: 0,
-  },
 
   CreatedAt: { type: Date, default: Date.now },
   author: {
@@ -29,8 +24,7 @@ const blogSchema = new mongoose.Schema({
   },
   recommendedByEditor: { type: Boolean, default: false },
   likes: { type: Number, default: 0 },
-  reviews: { type: Number, default: 0 },
-  reads: { type: Number, default: 0 },
+  views: { type: Number, default: 0 },
 });
 
 blogSchema.pre('save', async function (next) {
