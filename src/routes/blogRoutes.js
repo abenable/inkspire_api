@@ -11,7 +11,7 @@ router.post('/post', protect, async (req, res, next) => {
   try {
     const blog = await BlogModel.create({
       title,
-      content,
+      body,
       category,
       tags,
       author: req.user.id,
