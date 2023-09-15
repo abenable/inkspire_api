@@ -72,11 +72,6 @@ app.use('/blog', blogRouter);
 // Use the user router for '/users' routes
 app.use('/users', userRouter);
 
-// Default route for the homepage
-app.use('/', (req, res, next) => {
-  res.status(200).render('homepage', { title: 'Home' });
-});
-
 // Middleware to handle routes that are not found
 app.all('*', (req, res, next) => {
   next(
