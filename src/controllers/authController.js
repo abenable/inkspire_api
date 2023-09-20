@@ -167,7 +167,7 @@ export const updatepassword = async (req, res, next) => {
 // Handler for user registration
 export const Register = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     const checkemail = await UserModel.findOne({ email });
     if (checkemail) {
@@ -176,7 +176,8 @@ export const Register = async (req, res, next) => {
       );
     }
     const newUser = new UserModel({
-      username,
+      firstName,
+      lastName,
       email,
       password,
     });
